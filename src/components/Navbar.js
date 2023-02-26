@@ -15,9 +15,9 @@ import {
   HStack,
 } from "@chakra-ui/react";
 import { VscMenu, VscClose } from "react-icons/vsc";
-import { CiHome, CiEdit, CiLogin } from "react-icons/ci";
+import { CiHome, CiEdit, CiLogin, CiLogout } from "react-icons/ci";
 
-export const Navbar = () => {
+export const Navbar = ({ isAuth }) => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isLargerThan768] = useMediaQuery("(min-width: 768px)");
 
@@ -48,12 +48,21 @@ export const Navbar = () => {
               </Link>
             </Box>
             <Box>
-              <Link to="/login">
-                <Flex alignItems="center">
-                  <CiLogin style={{ marginRight: "8px" }} size="20" />
-                  ログイン
-                </Flex>
-              </Link>
+              {!isAuth ? (
+                <Link to="/login">
+                  <Flex alignItems="center">
+                    <CiLogin style={{ marginRight: "8px" }} size="20" />
+                    ログイン
+                  </Flex>
+                </Link>
+              ) : (
+                <Link to="/logout">
+                  <Flex alignItems="center">
+                    <CiLogout style={{ marginRight: "8px" }} size="20" />
+                    ログアウト
+                  </Flex>
+                </Link>
+              )}
             </Box>
           </HStack>
         ) : (
@@ -90,12 +99,21 @@ export const Navbar = () => {
                         </Link>
                       </Box>
                       <Box>
-                        <Link to="/login">
-                          <Flex alignItems="center">
-                            <CiLogin style={{ marginRight: "8px" }} size="20" />
-                            ログイン
-                          </Flex>
-                        </Link>
+                        {!isAuth ? (
+                          <Link to="/login">
+                            <Flex alignItems="center">
+                              <CiLogin style={{ marginRight: "8px" }} size="20" />
+                              ログイン
+                            </Flex>
+                          </Link>
+                        ) : (
+                          <Link to="/logout">
+                            <Flex alignItems="center">
+                              <CiLogout style={{ marginRight: "8px" }} size="20" />
+                              ログアウト
+                            </Flex>
+                          </Link>
+                        )}
                       </Box>
                     </VStack>
                     <Box textAlign="center" marginTop="80px">
