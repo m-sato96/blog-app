@@ -1,22 +1,27 @@
 import React, { useEffect, useState } from "react";
 import { Card, CardBody, Text, Box, Heading, Button, Stack, StackDivider } from "@chakra-ui/react";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, deleteDoc, getDocs, doc } from "firebase/firestore";
 import { db } from "../firebase";
+import { auth } from "../firebase";
 
 export const Home = () => {
   const [postList, setPostList] = useState([]);
+  const getPosts = async () => {
+    const data = await getDocs(collection(db, "posts"));
+    setPostList(
+      data.docs.map((doc) => ({
+        ...doc.data(),
+        id: doc.id,
+      }))
+    );
+  };
   useEffect(() => {
-    const getPosts = async () => {
-      const data = await getDocs(collection(db, "posts"));
-      setPostList(
-        data.docs.map((doc) => ({
-          ...doc.data(),
-          id: doc.id,
-        }))
-      );
-    };
     getPosts();
   }, []);
+  const deletePost = async (id) => {
+    await deleteDoc(doc(db, "posts", id));
+    getPosts();
+  };
   return (
     <Box p={4} maxW="1000px" m=" 40px auto">
       {postList.map((post) => {
@@ -45,9 +50,11 @@ export const Home = () => {
                   >
                     @{post.author.username}
                   </Text>
-                  <Button colorScheme="orange" variant="ghost" size="sm">
-                    削除
-                  </Button>
+                  {auth.currentUser && post.author.id === auth.currentUser.uid && (
+                    <Button colorScheme="orange" variant="ghost" size="sm" onClick={() => deletePost(post.id)}>
+                      削除
+                    </Button>
+                  )}
                 </Box>
               </Stack>
             </CardBody>
