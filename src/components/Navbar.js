@@ -39,14 +39,16 @@ export const Navbar = ({ isAuth }) => {
                 </Flex>
               </Link>
             </Box>
-            <Box>
-              <Link to="/createpost">
-                <Flex alignItems="center">
-                  <CiEdit style={{ marginRight: "8px" }} size="20" />
-                  記事投稿
-                </Flex>
-              </Link>
-            </Box>
+            {isAuth && (
+              <Box>
+                <Link to="/createpost">
+                  <Flex alignItems="center">
+                    <CiEdit style={{ marginRight: "8px" }} size="20" />
+                    記事投稿
+                  </Flex>
+                </Link>
+              </Box>
+            )}
             <Box>
               {!isAuth ? (
                 <Link to="/login">
@@ -90,14 +92,16 @@ export const Navbar = ({ isAuth }) => {
                           </Flex>
                         </Link>
                       </Box>
-                      <Box>
-                        <Link to="/createpost">
-                          <Flex alignItems="center">
-                            <CiEdit style={{ marginRight: "8px" }} size="20" />
-                            記事投稿
-                          </Flex>
-                        </Link>
-                      </Box>
+                      {isAuth && (
+                        <Box>
+                          <Link to="/createpost">
+                            <Flex alignItems="center">
+                              <CiEdit style={{ marginRight: "8px" }} size="20" />
+                              記事投稿
+                            </Flex>
+                          </Link>
+                        </Box>
+                      )}
                       <Box>
                         {!isAuth ? (
                           <Link to="/login">

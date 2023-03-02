@@ -1,13 +1,16 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Button, Heading, Input, Text, Textarea } from "@chakra-ui/react";
 import { collection, addDoc } from "firebase/firestore";
 import { db, auth } from "../firebase";
 import { useNavigate } from "react-router-dom";
 
-export const CreatePost = () => {
+export const CreatePost = ({ isAuth }) => {
   const [title, setTitle] = useState("");
   const [postsText, setPostsText] = useState("");
   const navigate = useNavigate();
+  useEffect(() => {
+    !isAuth && navigate("/login");
+  }, []);
   const createPost = async () => {
     await addDoc(collection(db, "posts"), {
       title,
