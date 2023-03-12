@@ -12,12 +12,21 @@ export const CreatePost = ({ isAuth }) => {
     !isAuth && navigate("/login");
   }, []);
   const createPost = async () => {
+    const now = new Date();
+    const options = {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      weekday: "short",
+    };
     await addDoc(collection(db, "posts"), {
       title,
       postsText,
+      date: now.toLocaleDateString("ja-JP", options),
       author: {
         username: auth.currentUser.displayName,
         id: auth.currentUser.uid,
+        img: auth.currentUser.photoURL,
       },
     });
     navigate("/");
