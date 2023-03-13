@@ -7,11 +7,19 @@ import { useNavigate } from "react-router-dom";
 export const CreatePost = ({ isAuth }) => {
   const [title, setTitle] = useState("");
   const [postsText, setPostsText] = useState("");
+  const [isError, setIsError] = useState(false);
   const navigate = useNavigate();
   useEffect(() => {
     !isAuth && navigate("/login");
   }, []);
+  useEffect(() => {
+    postsText && setIsError(false);
+  }, [postsText]);
   const createPost = async () => {
+    if (!postsText) {
+      setIsError(true);
+      return;
+    }
     const now = new Date();
     const hours = now.getHours().toString();
     const minutes = now.getMinutes().toString().padStart(2, "0");
@@ -44,7 +52,7 @@ export const CreatePost = ({ isAuth }) => {
         }}
       />
       <Text fontWeight="600" mb="8px">
-        投稿内容
+        記事内容
       </Text>
       <Textarea
         colorScheme="teal"
@@ -56,6 +64,11 @@ export const CreatePost = ({ isAuth }) => {
           setPostsText(e.target.value);
         }}
       />
+      {isError && (
+        <Text mt={1} color="red" fontSize="14px" position="absolute" bottom={110}>
+          記事内容は必須です
+        </Text>
+      )}
       <Button colorScheme="teal" variant="solid" m="40px auto" display="block" onClick={createPost}>
         投稿する
       </Button>
