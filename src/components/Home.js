@@ -8,12 +8,15 @@ export const Home = () => {
   const [postList, setPostList] = useState([]);
   const getPosts = async () => {
     const data = await getDocs(collection(db, "posts"));
-    setPostList(
-      data.docs.map((doc) => ({
+    // dataから新しい配列を作成してソートした値をsetPostList()に渡す
+    const sortedPostList = data.docs
+      .map((doc) => ({
         ...doc.data(),
+        created_at: new Date(Date.parse(doc.data().created_at)),
         id: doc.id,
       }))
-    );
+      .sort((a, b) => b.created_at - a.created_at);
+    setPostList(sortedPostList);
   };
   useEffect(() => {
     getPosts();
@@ -21,6 +24,41 @@ export const Home = () => {
   const deletePost = async (id) => {
     await deleteDoc(doc(db, "posts", id));
     getPosts();
+  };
+  const dateFormat = (updateDate) => {
+    const hours = updateDate.getHours().toString();
+    const minutes = updateDate.getMinutes().toString().padStart(2, "0");
+
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(today.getDate() - 1);
+
+    const oneWeekAgo = new Date(today);
+    oneWeekAgo.setDate(today.getDate() - 7);
+
+    const options = {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    };
+    const updateDateString = updateDate.toLocaleDateString("ja-JP", options);
+    const todayDateString = today.toLocaleDateString("ja-JP", options);
+    const yesterdayDateString = yesterday.toLocaleDateString("ja-JP", options);
+
+    if (oneWeekAgo.getTime() < updateDate.getTime()) {
+      if (updateDateString === todayDateString) {
+        return `${hours}:${minutes}`;
+      } else if (updateDateString === yesterdayDateString) {
+        return "昨日";
+      } else {
+        const options = {
+          weekday: "short",
+        };
+        return `${updateDate.toLocaleDateString("ja-JP", options)}曜日`;
+      }
+    } else {
+      return updateDateString;
+    }
   };
   return (
     <Box p={4} pl={16} maxW="1000px" m="40px auto">
@@ -50,7 +88,7 @@ export const Home = () => {
                     {post.postsText}
                   </Text>
                   <Text pt="2" fontSize="12px" color="gray" textAlign="right">
-                    {post.date}
+                    {dateFormat(post.created_at)}
                   </Text>
                 </Box>
                 <Box display="flex" alignItems="center" justifyContent="space-between">
@@ -67,7 +105,7 @@ export const Home = () => {
                     {post.author.username}
                   </Text>
                   {auth.currentUser && post.author.id === auth.currentUser.uid && (
-                    <Button colorScheme="orange" variant="ghost" size="sm" onClick={() => deletePost(post.id)}>
+                    <Button colorScheme="orange" variant="ghost" size="sm" pr={0} onClick={() => deletePost(post.id)}>
                       削除
                     </Button>
                   )}

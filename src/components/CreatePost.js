@@ -13,16 +13,13 @@ export const CreatePost = ({ isAuth }) => {
   }, []);
   const createPost = async () => {
     const now = new Date();
-    const options = {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      weekday: "short",
-    };
+    const hours = now.getHours().toString();
+    const minutes = now.getMinutes().toString().padStart(2, "0");
+    const currentDateString = `${now.toLocaleDateString("ja-JP")} ${hours}:${minutes}`;
     await addDoc(collection(db, "posts"), {
       title,
       postsText,
-      date: now.toLocaleDateString("ja-JP", options),
+      created_at: currentDateString,
       author: {
         username: auth.currentUser.displayName,
         id: auth.currentUser.uid,
