@@ -15,7 +15,7 @@ export const Login = ({ setIsAuth }) => {
     });
   };
   return (
-    <Box textAlign="center" marginTop="80px">
+    <Box textAlign="center" pt="180px">
       <Heading as="h2">Login</Heading>
       <Button marginTop="24px" leftIcon={<CiUser />} colorScheme="teal" variant="solid" size="sm" onClick={logInWithGoogle}>
         Googleでログイン

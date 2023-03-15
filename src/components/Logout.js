@@ -15,7 +15,7 @@ export const Logout = ({ setIsAuth }) => {
     });
   };
   return (
-    <Box textAlign="center" marginTop="80px">
+    <Box textAlign="center" pt="180px">
       <Heading as="h2">Logout</Heading>
       <Button marginTop="24px" leftIcon={<CiLogout />} colorScheme="teal" variant="solid" size="sm" onClick={logOut}>
         ログアウト

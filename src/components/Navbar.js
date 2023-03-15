@@ -24,7 +24,7 @@ export const Navbar = ({ isAuth }) => {
   const handleDrawerOpen = () => setIsDrawerOpen(true);
   const handleDrawerClose = () => setIsDrawerOpen(false);
   return (
-    <Box boxShadow="sm">
+    <Box boxShadow="sm" className="header_bg" position="fixed" zIndex={10} w="100%">
       <Flex align="center" justify="space-between" p="4" maxW="1000px" margin="auto">
         <Heading as="h1" size="md">
           Blog App

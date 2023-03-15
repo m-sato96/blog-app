@@ -37,7 +37,7 @@ export const CreatePost = ({ isAuth }) => {
     navigate("/");
   };
   return (
-    <Box maxW="1000px" m="auto" p="16px">
+    <Box maxW="1000px" m="auto" p="80px 16px 16px">
       <Heading as="h2" size="md" m="20px auto 60px" textAlign="center">
         新規記事作成
       </Heading>

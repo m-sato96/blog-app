@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Card, CardBody, Text, Box, Heading, Button, Stack, StackDivider, Image } from "@chakra-ui/react";
+import { Card, CardBody, Text, Box, Heading, Button, Stack, StackDivider, Image, Spinner } from "@chakra-ui/react";
 import { collection, deleteDoc, getDocs, doc } from "firebase/firestore";
 import { db } from "../firebase";
 import { auth } from "../firebase";
 
 export const Home = () => {
   const [postList, setPostList] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const getPosts = async () => {
     const data = await getDocs(collection(db, "posts"));
     // dataから新しい配列を作成してソートした値をsetPostList()に渡す
@@ -17,6 +18,7 @@ export const Home = () => {
       }))
       .sort((a, b) => b.created_at - a.created_at);
     setPostList(sortedPostList);
+    setIsLoading(false);
   };
   useEffect(() => {
     getPosts();
@@ -61,60 +63,68 @@ export const Home = () => {
     }
   };
   return (
-    <Box p={4} pl={16} maxW="1000px" m="40px auto">
-      {postList.map((post) => {
-        return (
-          <Card m="0 0 40px" key={post.id}>
-            <CardBody>
-              {post.author.img && (
-                <Box
-                  boxSize="40px"
-                  position="absolute"
-                  top="0px"
-                  left="-51px"
-                  border="1px solid"
-                  borderColor="gray.100"
-                  borderRadius="full"
-                >
-                  <Image src={post.author.img} alt="" borderRadius="full" />
-                </Box>
-              )}
-              <Stack divider={<StackDivider />} spacing="4">
-                <Box>
-                  <Heading size="xs" textTransform="uppercase">
-                    {post.title}
-                  </Heading>
-                  <Text pt="2" fontSize="sm">
-                    {post.postsText}
-                  </Text>
-                  <Text pt="2" fontSize="12px" color="gray" textAlign="right">
-                    {dateFormat(post.created_at)}
-                  </Text>
-                </Box>
-                <Box display="flex" alignItems="center" justifyContent="space-between">
-                  <Text
-                    color="gray"
-                    fontSize="sm"
-                    sx={{
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                      whiteSpace: "nowrap",
-                      maxWidth: "75%",
-                    }}
-                  >
-                    {post.author.username}
-                  </Text>
-                  {auth.currentUser && post.author.id === auth.currentUser.uid && (
-                    <Button colorScheme="orange" variant="ghost" size="sm" pr={0} onClick={() => deletePost(post.id)}>
-                      削除
-                    </Button>
+    <>
+      {isLoading ? (
+        <Box w="100%" h="95vh" position="relative">
+          <Spinner position="absolute" top="50%" left="50%" />
+        </Box>
+      ) : (
+        <Box p="120px 16px 16px" pl={16} maxW="1000px" m="auto">
+          {postList.map((post) => {
+            return (
+              <Card m="0 0 40px" key={post.id}>
+                <CardBody>
+                  {post.author.img && (
+                    <Box
+                      boxSize="40px"
+                      position="absolute"
+                      top="0px"
+                      left="-51px"
+                      border="1px solid"
+                      borderColor="gray.100"
+                      borderRadius="full"
+                    >
+                      <Image src={post.author.img} alt="" borderRadius="full" />
+                    </Box>
                   )}
-                </Box>
-              </Stack>
-            </CardBody>
-          </Card>
-        );
-      })}
-    </Box>
+                  <Stack divider={<StackDivider />} spacing="4">
+                    <Box>
+                      <Heading size="xs" textTransform="uppercase">
+                        {post.title}
+                      </Heading>
+                      <Text pt="2" fontSize="sm">
+                        {post.postsText}
+                      </Text>
+                      <Text pt="2" fontSize="12px" color="gray" textAlign="right">
+                        {dateFormat(post.created_at)}
+                      </Text>
+                    </Box>
+                    <Box display="flex" alignItems="center" justifyContent="space-between">
+                      <Text
+                        color="gray"
+                        fontSize="sm"
+                        sx={{
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                          maxWidth: "75%",
+                        }}
+                      >
+                        {post.author.username}
+                      </Text>
+                      {auth.currentUser && post.author.id === auth.currentUser.uid && (
+                        <Button colorScheme="orange" variant="ghost" size="sm" pr={0} onClick={() => deletePost(post.id)}>
+                          削除
+                        </Button>
+                      )}
+                    </Box>
+                  </Stack>
+                </CardBody>
+              </Card>
+            );
+          })}
+        </Box>
+      )}
+    </>
   );
 };
